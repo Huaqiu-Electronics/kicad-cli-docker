@@ -18,7 +18,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/liangtie/kicad
-          tags: type=sha
+          tags: lastest
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
