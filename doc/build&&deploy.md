@@ -42,9 +42,10 @@ docker push liangtie/kicad:latest
 
 ### Build container images
 
-docker build - < Dockerfile.cli-server
+docker build .
 
 ## References
 
 1. https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
+
 2. https://stackoverflow.com/questions/48038969/an-image-does-not-exist-locally-with-the-tag-while-pushing-image-to-local-regis
