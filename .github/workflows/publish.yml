@@ -24,7 +24,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ vars.KICAD_CI_TOKEN }}
       - name: Build container
         uses: docker/build-push-action@v5
         with:
