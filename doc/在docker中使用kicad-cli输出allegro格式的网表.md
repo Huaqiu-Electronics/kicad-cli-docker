@@ -16,6 +16,10 @@ docker images
 
 docker run -v /home/hq/kicad:/home/kicad/ 6d61f4c28457 kicad-cli sch export netlist --format allegro /home/kicad/pspice.kicad_sch -o /home/kicad/pspice.txt
 
+## 运行kicad cli 导出pcb vrml
+
+docker run -v D:/Subject/EDA/kicad/.vscode:/home/kicad/ 22bbb90cf18b kicad-cli pcb export vrml /home/kicad/complex_hierarchy.kicad_pcb -o /home/kicad/complex_hierarchy.wrl
+
 ### 参数说明
 
 -v /home/hq/kicad:/home/kicad/ : 挂载主机目录（/home/hq/kicad）到容器目录（/home/kicad/）
