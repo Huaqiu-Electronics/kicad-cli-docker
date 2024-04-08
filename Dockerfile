@@ -97,7 +97,9 @@ RUN set -ex; \
     cmake --install . --prefix=/usr/installtemp/
 
 
-RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates
+RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates && rm -rf /src/kicad
+
+WORKDIR /src
 
 RUN set -ex;            \
     git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git;
