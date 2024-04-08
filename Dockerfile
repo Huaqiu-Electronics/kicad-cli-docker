@@ -31,11 +31,10 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone -b cli-server https://gitlab.com/Liangtie/kicad.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-packages3D.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone --depth 1  -b cli-server https://gitlab.com/Liangtie/kicad.git; \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
 
 WORKDIR /src/kicad
 
@@ -96,6 +95,12 @@ RUN set -ex; \
     . \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
+
+
+RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates
+
+RUN set -ex;            \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git;
 
 RUN set -ex; \
     cd /src/kicad-packages3D; \
