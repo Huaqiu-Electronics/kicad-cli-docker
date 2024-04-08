@@ -28,10 +28,6 @@ RUN apt-get update && \
     python3-venv
 
 
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-RUN sudo apt-get install -y nodejs
-RUN npm install -g gltfpack
-
 WORKDIR /src
 
 RUN set -ex;            \
@@ -152,6 +148,10 @@ RUN apt-get update && \
     libgit2-1.5 \
     libsecret-1-0 \
     sudo
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g gltfpack
 
 
 COPY --from=build /usr/installtemp/bin /usr/bin
