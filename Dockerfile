@@ -33,6 +33,7 @@ RUN set -ex;            \
     git clone -b cli-server https://gitlab.com/Liangtie/kicad.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone https://gitlab.com/kicad/libraries/kicad-packages3D.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
 
 WORKDIR /src/kicad
@@ -86,6 +87,17 @@ RUN set -ex; \
 
 RUN set -ex; \
     cd /src/kicad-templates; \
+    cmake \
+    -G Ninja \
+    -DCMAKE_RULE_MESSAGES=OFF \
+    -DCMAKE_VERBOSE_MAKEFILE=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    . \
+    ninja; \
+    cmake --install . --prefix=/usr/installtemp/
+
+RUN set -ex; \
+    cd src/kicad-packages3D; \
     cmake \
     -G Ninja \
     -DCMAKE_RULE_MESSAGES=OFF \
@@ -154,6 +166,11 @@ RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
     && usermod -aG sudo $USER_NAME \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+RUN sudo sh -c 'echo "export KICAD6_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/environment'
+RUN sudo sh -c 'echo "export KICAD7_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/environment'
+RUN sudo sh -c 'echo "export KICAD8_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/environment'
+
 
 # Copy over the lib tables to the user config directory
 RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
