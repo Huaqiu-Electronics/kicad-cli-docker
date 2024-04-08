@@ -102,7 +102,7 @@ RUN set -ex; \
     cmake --install . --prefix=/usr/installtemp/
 
 RUN set -ex; \
-    cd src/kicad-packages3D; \
+    cd /src/kicad-packages3D; \
     cmake \
     -G Ninja \
     -DCMAKE_RULE_MESSAGES=OFF \
