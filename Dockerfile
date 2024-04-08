@@ -27,6 +27,11 @@ RUN apt-get update && \
     python3-pip \
     python3-venv
 
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs
+RUN npm install -g gltfpack
+
 WORKDIR /src
 
 RUN set -ex;            \
