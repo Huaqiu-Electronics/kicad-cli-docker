@@ -147,6 +147,7 @@ RUN apt-get update && \
     git \
     libgit2-1.5 \
     libsecret-1-0 \
+    curl \
     sudo
 
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
