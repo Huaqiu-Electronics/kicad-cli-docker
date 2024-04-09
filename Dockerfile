@@ -99,22 +99,6 @@ RUN set -ex; \
 
 RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates && rm -rf /src/kicad
 
-WORKDIR /src
-
-RUN set -ex;            \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git;
-
-RUN set -ex; \
-    cd /src/kicad-packages3D; \
-    cmake \
-    -G Ninja \
-    -DCMAKE_RULE_MESSAGES=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
-    ninja; \
-    cmake --install . --prefix=/usr/installtemp/
-
 FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
@@ -165,6 +149,11 @@ RUN npm install -g gltfpack
 COPY --from=build /usr/installtemp/bin /usr/bin
 COPY --from=build /usr/installtemp/share /usr/share
 COPY --from=build /usr/installtemp/lib /usr/lib
+
+RUN set -ex;            \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
+
+RUN rm -rf /usr/share/kicad/3dmodels/.git
 
 # fix the linkage to libkicad_3dsg
 RUN ldconfig -l /usr/bin/_pcbnew.kiface
