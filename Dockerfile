@@ -23,9 +23,14 @@ RUN apt-get update && \
     ninja-build \
     libgit2-dev \
     libsecret-1-dev \
+    libnng-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
     swig4.0 \
     python3-pip \
-    python3-venv
+    python3-venv \
+    libprotobuf-dev \
+    protobuf-compiler
 
 
 WORKDIR /src
@@ -48,6 +53,7 @@ RUN set -ex; \
     -DKICAD_SPICE=ON \
     -DKICAD_BUILD_I18N=ON \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKICAD_USE_CMAKE_FINDPROTOBUF=ON \
     ../../; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
@@ -75,7 +81,7 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
     org.opencontainers.image.licenses='GPL-3.0-or-later' \
     org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
 
-# install runtime dependencies 
+# install runtime dependencies
 RUN apt-get update && \
     apt-get install -y libbz2-1.0 \
     libcairo2 \
@@ -84,7 +90,7 @@ RUN apt-get update && \
     libx11-6 \
     libwxgtk3.2* \
     libpython3.11 \
-    python3 \ 
+    python3 \
     python3-wxgtk4.0 \
     libcurl4 \
     libngspice0 \
