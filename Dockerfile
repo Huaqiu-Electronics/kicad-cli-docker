@@ -24,7 +24,6 @@ RUN apt-get update && \
     libgit2-dev \
     libsecret-1-dev \
     libnng-dev \
-    libprotobuf-dev \
     protobuf-compiler \
     swig4.0 \
     python3-pip \
@@ -101,6 +100,7 @@ RUN apt-get update && \
     libocct-visualization-7.6 \
     libocct-foundation-7.6 \
     libocct-ocaf-7.6 \
+    libprotobuf-dev \
     unixodbc \
     zlib1g \
     shared-mime-info \
