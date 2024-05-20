@@ -35,10 +35,7 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone --depth 1  -b cli-server https://gitlab.com/Liangtie/kicad.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone --depth 1  -b cli-server https://gitlab.com/Liangtie/kicad.git;
 
 WORKDIR /src/kicad
 
@@ -68,41 +65,7 @@ RUN set -ex; \
 #     ctest --output-on-failure
 
 # Continue library installs
-RUN set -ex; \
-    cd /src/kicad-symbols; \
-    cmake \
-    -G Ninja \
-    -DCMAKE_RULE_MESSAGES=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
-    ninja; \
-    cmake --install . --prefix=/usr/installtemp/
 
-RUN set -ex; \
-    cd /src/kicad-footprints; \
-    cmake \
-    -G Ninja \
-    -DCMAKE_RULE_MESSAGES=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
-    ninja; \
-    cmake --install . --prefix=/usr/installtemp/
-
-RUN set -ex; \
-    cd /src/kicad-templates; \
-    cmake \
-    -G Ninja \
-    -DCMAKE_RULE_MESSAGES=OFF \
-    -DCMAKE_VERBOSE_MAKEFILE=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
-    ninja; \
-    cmake --install . --prefix=/usr/installtemp/
-
-
-RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates && rm -rf /src/kicad
 
 FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
@@ -156,11 +119,6 @@ COPY --from=build /usr/installtemp/bin /usr/bin
 COPY --from=build /usr/installtemp/share /usr/share
 COPY --from=build /usr/installtemp/lib /usr/lib
 
-RUN set -ex;            \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
-
-RUN rm -rf /usr/share/kicad/3dmodels/.git
-
 # fix the linkage to libkicad_3dsg
 RUN ldconfig -l /usr/bin/_pcbnew.kiface
 
@@ -175,15 +133,9 @@ RUN groupadd --gid $USER_GID $USER_NAME \
     && usermod -aG sudo $USER_NAME \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN sudo sh -c 'echo "export KICAD6_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
-RUN sudo sh -c 'echo "export KICAD7_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
-RUN sudo sh -c 'echo "export KICAD8_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
-
 
 # Copy over the lib tables to the user config directory
 RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
-
-RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 
 RUN chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
 RUN chown -R $USER_NAME:$USER_NAME /tmp/org.kicad.kicad || true
