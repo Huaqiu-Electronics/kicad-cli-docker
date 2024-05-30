@@ -1,6 +1,9 @@
 FROM debian:bookworm AS build
 
-# install build dependencies 
+ARG KICAD_VERSION=8.0.2
+
+
+# install build dependencies
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
     libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
@@ -35,10 +38,10 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone --depth 1  -b cli-server https://gitlab.com/Liangtie/kicad.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone -b cli-server --depth 1 https://gitlab.com/Liangtie/kicad.git; \
+    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
 
 WORKDIR /src/kicad
 
@@ -157,7 +160,7 @@ COPY --from=build /usr/installtemp/share /usr/share
 COPY --from=build /usr/installtemp/lib /usr/lib
 
 RUN set -ex;            \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
+    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
 
 RUN rm -rf /usr/share/kicad/3dmodels/.git
 
