@@ -111,6 +111,8 @@ FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG KICAD_VERSION=8.0.2
+
 
 LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/devlist' \
     org.opencontainers.image.url='https://kicad.org' \
