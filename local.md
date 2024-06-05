@@ -30,7 +30,8 @@ apt-get update && \
  python3-pip \
  python3-venv \
  libprotobuf-dev \
- protobuf-compiler
+ protobuf-compiler \
+ swig
 
 ## pull code
 
