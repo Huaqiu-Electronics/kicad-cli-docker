@@ -1,8 +1,6 @@
 FROM debian:bookworm AS build
 
-ARG KICAD_VERSION=8.0.2
-
-
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
 # install build dependencies
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
@@ -39,9 +37,9 @@ WORKDIR /src
 
 RUN set -ex;            \
     git clone -b cli-server --depth 1 https://gitlab.com/Liangtie/kicad.git; \
-    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git;
 
 WORKDIR /src/kicad
 
@@ -111,7 +109,6 @@ FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG KICAD_VERSION=8.0.2
 
 
 LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/devlist' \
@@ -121,6 +118,8 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
     org.opencontainers.image.vendor='KiCad' \
     org.opencontainers.image.licenses='GPL-3.0-or-later' \
     org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
+
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
 
 # install runtime dependencies
 RUN apt-get update && \
@@ -162,7 +161,7 @@ COPY --from=build /usr/installtemp/share /usr/share
 COPY --from=build /usr/installtemp/lib /usr/lib
 
 RUN set -ex;            \
-    git clone -b $KICAD_VERSION --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
+    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-packages3D.git /usr/share/kicad/3dmodels;
 
 RUN rm -rf /usr/share/kicad/3dmodels/.git
 
