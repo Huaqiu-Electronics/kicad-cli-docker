@@ -1,6 +1,7 @@
 FROM debian:bookworm AS build
 
-# install build dependencies 
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
+# install build dependencies
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
     libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
@@ -72,6 +73,7 @@ ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+
 LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/devlist' \
     org.opencontainers.image.url='https://kicad.org' \
     org.opencontainers.image.documentation='https://docs.kicad.org/' \
@@ -79,6 +81,8 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
     org.opencontainers.image.vendor='KiCad' \
     org.opencontainers.image.licenses='GPL-3.0-or-later' \
     org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
+
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
 
 # install runtime dependencies
 RUN apt-get update && \
