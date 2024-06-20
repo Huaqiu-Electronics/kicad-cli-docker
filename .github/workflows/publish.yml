@@ -19,7 +19,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/Huaqiu-Electronics//kicad
+          images: ghcr.io/Huaqiu-Electronics/kicad
           tags: full
       - name: Login to GHCR
         uses: docker/login-action@v3
