@@ -9,6 +9,31 @@ permissions:
   packages: write
   contents: read
 jobs:
+  publish-lite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Add your test steps here if needed...
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/Huaqiu-Electronics/kicad
+          tags: lite
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.Huaqiu_Electronics_TOKEN }}
+      - name: Build container
+        uses: docker/build-push-action@v5
+        with:
+          context: ./lite
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
   publish-full:
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +55,6 @@ jobs:
       - name: Build container
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./full
           push: true
           tags: ${{ steps.meta.outputs.tags }}
