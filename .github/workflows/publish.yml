@@ -9,6 +9,56 @@ permissions:
   packages: write
   contents: read
 jobs:
+  publish-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Add your test steps here if needed...
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/Huaqiu-Electronics/kicad
+          tags: dev
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.Huaqiu_Electronics_TOKEN }}
+      - name: Build container
+        uses: docker/build-push-action@v5
+        with:
+          context: ./dev
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  publish-dev-aliyun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Add your test steps here if needed...
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: registry.cn-shanghai.aliyuncs.com/kicad/kicad
+          tags: dev
+      - name: Login to aliyun
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-shanghai.aliyuncs.com
+          username: Liangtie
+          password: ${{ secrets.ALIYUNCS_DOCKER_PASSWORD }}
+      - name: Build container
+        uses: docker/build-push-action@v5
+        with:
+          context: ./dev
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
   publish-lite:
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +84,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
-  publish-ecad-vewer-lite-aliyun:
+  publish-lite-aliyun:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -84,7 +134,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
-  publish-ecad-vewer-full-aliyun:
+  publish-full-aliyun:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
