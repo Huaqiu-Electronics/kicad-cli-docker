@@ -1,6 +1,6 @@
 FROM debian:bookworm
 
-RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
+
 
 # install build dependencies
 # --- MODIFICATION: Added 'locales' to the list ---
