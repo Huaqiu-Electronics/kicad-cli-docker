@@ -1,4 +1,4 @@
-FROM debian:bookworm AS build
+FROM debian:trixie AS build
 
 
 # install build dependencies
@@ -115,7 +115,7 @@ RUN set -ex; \
 
 RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates && rm -rf /src/kicad
 
-FROM debian:bookworm-slim AS runtime
+FROM debian:trixie-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
