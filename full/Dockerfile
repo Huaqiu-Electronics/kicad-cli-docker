@@ -164,6 +164,7 @@ RUN apt-get update && \
     python3-pip \
     python3-venv \
     libprotobuf-dev \
+    sudo \
     lld
     
 # --- MODIFICATION START: Configure Locale to UTF-8 ---
