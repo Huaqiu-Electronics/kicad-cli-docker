@@ -1,4 +1,4 @@
-FROM debian:trixie AS build
+FROM debian:bookworm AS build
 
 
 # install build dependencies
@@ -81,7 +81,7 @@ RUN set -ex; \
 # Continue library installs
 
 
-FROM debian:trixie-slim AS runtime
+FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
