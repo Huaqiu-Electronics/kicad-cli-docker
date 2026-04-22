@@ -1,4 +1,5 @@
-FROM debian:bookworm AS build
+FROM debian:trixie AS build
+ARG KICAD_VERSION=10.0
 
 
 # install build dependencies
@@ -7,8 +8,9 @@ RUN apt-get update && \
     locales \
     build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
     libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
+    libwxgtk-webview3.2-dev \
     mesa-common-dev pkg-config python3-dev python3-wxgtk4.0 \
-     libboost-dev libboost-filesystem-dev libboost-locale-dev libboost-random-dev libboost-test-dev libglm-dev libcurl4-openssl-dev \
+    libboost-all-dev libglm-dev libcurl4-openssl-dev \
     libgtk-3-dev \
     libngspice0-dev \
     ngspice-dev \
@@ -27,21 +29,24 @@ RUN apt-get update && \
     libgit2-dev \
     libsecret-1-dev \
     libnng-dev \
+    libprotobuf-dev \
     protobuf-compiler \
-    swig4.0 \
+    swig \
     python3-pip \
     python3-venv \
-    libprotobuf-dev \
+    libzstd-dev \
+    libspnav-dev \
+    libpoppler-glib-dev \
     lld
 
 
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone -b kicad-cli --depth 1 https://gitlab.com/Liangtie/kicad.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone --depth 1  https://gitlab.com/kicad/libraries/kicad-templates.git; \
+    git clone -b cli/10.0 --depth 1 https://gitlab.com/Liangtie/kicad.git; \
+    git clone -b $KICAD_VERSION --depth 1 https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone -b $KICAD_VERSION --depth 1 https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone -b $KICAD_VERSION --depth 1 https://gitlab.com/kicad/libraries/kicad-templates.git; \
     git clone --depth 1  https://github.com/liangtie/meshoptimizer.git
 
 WORKDIR /src/meshoptimizer
@@ -88,7 +93,7 @@ RUN set -ex; \
     -DCMAKE_RULE_MESSAGES=OFF \
     -DCMAKE_VERBOSE_MAKEFILE=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
+    .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
@@ -99,7 +104,7 @@ RUN set -ex; \
     -DCMAKE_RULE_MESSAGES=OFF \
     -DCMAKE_VERBOSE_MAKEFILE=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
+    .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
@@ -110,14 +115,14 @@ RUN set -ex; \
     -DCMAKE_RULE_MESSAGES=OFF \
     -DCMAKE_VERBOSE_MAKEFILE=OFF \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    . \
+    .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
 
 RUN rm -rf /src/kicad-symbols && rm -rf /src/kicad-footprints && rm -rf /src/kicad-templates && rm -rf /src/kicad
 
-FROM debian:bookworm-slim AS runtime
+FROM debian:trixie-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -137,33 +142,38 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
 RUN apt-get update && \
     apt-get install -y \
     locales \
-    build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
-    libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
-    mesa-common-dev pkg-config python3-dev python3-wxgtk4.0 \
-     libboost-dev libboost-filesystem-dev libboost-locale-dev libboost-random-dev libboost-test-dev libglm-dev libcurl4-openssl-dev \
-    libgtk-3-dev \
-    libngspice0-dev \
-    ngspice-dev \
-    libocct-modeling-algorithms-dev \
-    libocct-modeling-data-dev \
-    libocct-data-exchange-dev \
-    libocct-visualization-dev \
-    libocct-foundation-dev \
-    libocct-ocaf-dev \
-    unixodbc-dev \
-    zlib1g-dev \
+    libbz2-1.0 \
+    libcairo2 \
+    libglu1-mesa \
+    libglew2.2 \
+    libx11-6 \
+    libwxgtk3.2-1 \
+    libwxgtk-webview3.2-1 \
+    libpython3.13 \
+    python3 \
+    python3-wxgtk4.0 \
+    python3-yaml \
+    python3-typing-extensions \
+    libcurl4 \
+    libngspice0 \
+    ngspice \
+    libocct-modeling-algorithms-7.8 \
+    libocct-modeling-data-7.8 \
+    libocct-data-exchange-7.8 \
+    libocct-visualization-7.8 \
+    libocct-foundation-7.8 \
+    libocct-ocaf-7.8 \
+    unixodbc \
+    zlib1g \
     shared-mime-info \
     git \
-    gettext \
-    ninja-build \
-    libgit2-dev \
-    libsecret-1-dev \
-    libnng-dev \
-    protobuf-compiler \
-    swig4.0 \
-    python3-pip \
-    python3-venv \
-    libprotobuf-dev \
+    libgit2-1.9 \
+    libsecret-1-0 \
+    libprotobuf32 \
+    libzstd1 \
+    libnng1 \
+    libspnav0 \
+    libpoppler-glib8t64 \
     sudo \
     lld
     
@@ -203,6 +213,8 @@ RUN groupadd --gid $USER_GID $USER_NAME \
 RUN sudo sh -c 'echo "export KICAD6_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
 RUN sudo sh -c 'echo "export KICAD7_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
 RUN sudo sh -c 'echo "export KICAD8_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
+RUN sudo sh -c 'echo "export KICAD9_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
+RUN sudo sh -c 'echo "export KICAD10_3DMODEL_DIR=/usr/share/kicad/3dmodels" >> /etc/profile'
 
 
 # Copy over the lib tables to the user config directory
