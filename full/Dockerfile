@@ -1,5 +1,5 @@
 FROM debian:trixie AS build
-ARG KICAD_VERSION=10.0
+ARG KICAD_VERSION=10.0.0
 
 
 # install build dependencies
@@ -176,7 +176,7 @@ RUN apt-get update && \
     libpoppler-glib8t64 \
     sudo \
     lld
-    
+
 # --- MODIFICATION START: Configure Locale to UTF-8 ---
 # This fixes the CJK filename handling issue
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
