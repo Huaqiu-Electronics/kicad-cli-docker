@@ -43,8 +43,8 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone -b cli/10.0  --depth 1 https://gitlab.com/Liangtie/kicad.git; \
-    git clone --depth 1  https://github.com/liangtie/meshoptimizer.git
+    git clone -b cli/10.0  --depth 1 https://gitlab.com/kicad-hq/kicad.git; \
+    git clone --depth 1  https://github.com/Huaqiu-Electronics/meshoptimizer.git
 
 WORKDIR /src/meshoptimizer
 
